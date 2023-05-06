@@ -21,4 +21,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function(){
     Route::post('csv-data', [CsvDataController::class,'importCsv']);
+    Route::get('csv-data', [CsvDataController::class,'exportCsv']);
 });
