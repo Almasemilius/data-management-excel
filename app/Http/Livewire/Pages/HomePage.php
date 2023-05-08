@@ -4,7 +4,9 @@ namespace App\Http\Livewire\Pages;
 
 use App\Exports\CsvDataExport;
 use App\Imports\CsvDataImport;
+use App\Jobs\ExportExcelJob;
 use App\Models\CsvData;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\TemporaryUploadedFile;
@@ -16,13 +18,17 @@ class HomePage extends Component
 {
     use WithPagination, WithFileUploads;
     public $csvFile;
-    public $chunkSize = 2000000; // 1 MB
+    public $chunkSize = 2000000;
     public $fileChunk;
 
     public $fileName;
     public $fileSize;
 
     public $finalFile;
+
+    public $exporting =false;
+    public $exportFinished =false;
+    public $batchId;
     
     protected $rules = [
         'csvFile' => 'required|mimes:csv,xcls|max:20480'
@@ -41,34 +47,57 @@ class HomePage extends Component
         fwrite($final, $buff);
         fclose($final);
         unlink($tmpPath);
-        // $curSize = Storage::size('/livewire-tmp/' . $this->fileName);
-        // if ($curSize == $this->fileSize) {
-        //     $this->finalFile = TemporaryUploadedFile::createFromLivewire('/' . $this->fileName);
-        //     $this->uploadExcel();
+        $curSize = Storage::size('/livewire-tmp/' . $this->fileName);
+        if ($curSize == $this->fileSize) {
+            $this->csvFile = TemporaryUploadedFile::createFromLivewire('/' . $this->fileName);
+            $this->uploadExcel();
+        }
+    }
 
-        // }
-        $this->csvFile = TemporaryUploadedFile::createFromLivewire('/' . $this->fileName);
-        $this->uploadExcel();
+    public function getExcelFile()
+    {
+        return Storage::download('public/diamonds.xlsx');
+        $this->exportFinished = false;
     }
 
   
     public function downloadExcel()
     {
-        (new CsvDataExport)->queue('invoices.xlsx');
+        $this->exporting = true;
+        $this->exportFinished = false;
 
-        return back()->withSuccess('Export started!');
-        // return (new CsvDataExport)->download('diamonds.xlsx');
+        $batch = Bus::batch([
+            new ExportExcelJob(),
+        ])->dispatch();
+
+        $this->batchId = $batch->id;
+    }
+
+    public function updateExportProgress()
+    {
+        $this->exportFinished = $this->exportBatch->finished();
+
+        if ($this->exportFinished) {
+            $this->exporting = false;
+        }
+    }
+
+    public function getExportBatchProperty()
+    {
+        if (!$this->batchId) {
+            return null;
+        }
+
+        return Bus::findBatch($this->batchId);
     }
 
     public function uploadExcel()
     {
-        // dd("Here");
         Excel::import(new CsvDataImport, $this->csvFile);
+
     }
     public function render()
     {
-        $datas = CsvData::query();
-        $datas = $datas->paginate(15);
-        return view('livewire.pages.home-page', compact('datas'));
+        return view('livewire.pages.home-page');
     }
 }

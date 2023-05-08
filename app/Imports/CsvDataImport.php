@@ -56,4 +56,35 @@ class CsvDataImport implements ToModel, WithHeadingRow ,WithChunkReading, WithBa
     {
         return 500;
     }
+
+    // public function rules() : array
+    // {
+    //     return [
+    //         'cut' => 'required',
+    //         'color' => 'required',
+    //         'clarity' => 'required',
+    //         'carat_weight' => 'required',
+    //         'cut_quality' => 'required',
+    //         'lab' => 'required',
+    //         'symmetry' => 'required',
+    //         'polish' => 'required',
+    //         'eye_clean' => 'required',
+    //         'culet_size' => 'required',
+    //         'culet_condition' => 'required',
+    //         'depth_percent' => 'required',
+    //         'table_percent' => 'required',
+    //         'meas_length' => 'required',
+    //         'meas_width' => 'required',
+    //         'meas_depth' => 'required',
+    //         'girdle_min' => 'required',
+    //         'girdle_max' => 'required',
+    //         'fluor_color' => 'required',
+    //         'fluor_intensity' => 'required',
+    //         'fancy_color_dominant_color' => 'required',
+    //         'fancy_color_secondary_color' => 'required',
+    //         'fancy_color_overtone' => 'required',
+    //         'fancy_color_intensity' => 'required',
+    //         'total_sales_price' => 'required',
+    //     ];
+    // }
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CsvData extends Model
 {
     use HasFactory;
+    public $timestamps = false;
     protected $fillable = [
         'cut',
         'color',

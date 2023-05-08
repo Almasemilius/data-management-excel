@@ -38,7 +38,6 @@ return new class extends Migration
             $table->string('fancy_color_overtone');
             $table->string('fancy_color_intensity');
             $table->double('total_sales_price');
-            $table->timestamps();
         });
     }
 
