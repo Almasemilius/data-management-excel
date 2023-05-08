@@ -13,13 +13,11 @@ class CsvDataController extends Controller
 {
     public function importCsv(Request $request)
     {
-        Excel::import(new CsvDataImport,$request->file('data')->store('tmp'));
+        $request->validate([
+            'data' => 'required|file|mimes:csv'
+        ]);
+        Excel::import(new CsvDataImport,$request->file('data')->store('tmp'));  
+        return response()->json(['message' => 'uploading']);
     }
 
-    public function exportCsv(Request $request)
-    {
-        (new CsvDataExport)->queue('diamonds.xlsx');
-        // Excel::download(new CsvDataExport)->queue('invoices.xlsx');
-        // (new CsvDataExport)->queue('diamonds.xlsx');
-    }
 }
