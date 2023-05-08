@@ -12,12 +12,24 @@
         <p>
         In order to run this system locally, you need to have php 7 and above in your system, node installed and composer installed.
         </p>
+    </li>
+    <li>
         <p>After successifully cloning the project, duplicate the .env.example file and rename it to .env</p>
+    </li>
+    <li>
         <p>After renaming the file, fill in the details of the data base to be used for this system.</p>
+    </li>
+    <li>
         <p>After configuring the .env file, create a database in your machine having the same name as in your .env file</p>
+    </li>
+    <li>
         <p>once you have successifully set up the credentials in your env file and created a database, run composer install to install the project dependencies.</p>
+    </li>
+    <li>
         <p>Run php artisan migrate to create the tables defined in the migration files.</p>
-        <p>Lastly, run the command npm run build to compile the assets in the project and php artisan serve to serve the project locally in your machine.</p>
+    </li>
+    <li>
+     <p>Lastly, run the command npm run build to compile the assets in the project and php artisan serve to serve the project locally in your machine.</p>
     </li>
 </ul>
 <h3>
