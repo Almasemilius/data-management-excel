@@ -24,14 +24,12 @@ class HomePage extends Component
     public $fileName;
     public $fileSize;
 
-    public $finalFile;
-
     public $exporting =false;
     public $exportFinished =false;
     public $batchId;
     
     protected $rules = [
-        'csvFile' => 'required|mimes:csv,xcls|max:20480'
+        'csvFile' => 'required|file|mimes:csv,xcls|max:20480'
     ];
 
     public function updatedFileChunk()

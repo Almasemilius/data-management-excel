@@ -1,6 +1,8 @@
+@import './spinner.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 .table-cell{
     @apply px-5 py-3 text-center;
