@@ -76,6 +76,14 @@
         </p>
     </li>
 </ul>
+<h4>Upload file from api</h4>
+<ul>
+    <li>
+        <p>
+           To upload file from the API, tou should follow the endpoint attached to the root of the project as postman collection.
+        </p>
+    </li>
+</ul>
 <p>
     To optimize performance, the uploading and downloading process are done using queues and jobs thus while performing these operations, you have to run the command php artisan queue:work in your terminal.
 </p>

@@ -29,7 +29,7 @@ class HomePage extends Component
     public $batchId;
     
     protected $rules = [
-        'csvFile' => 'required|file|mimes:csv,xcls|max:20480'
+        'csvFile' => 'required|file|mimes:csv,xcls'
     ];
 
     public function updatedFileChunk()
