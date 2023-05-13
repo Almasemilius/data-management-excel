@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Imports\CsvDataImport;
 use App\Jobs\ExportExcelJob;
 use App\Models\CsvData;
+use Illuminate\Bus\Batch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
 use Maatwebsite\Excel\Facades\Excel;
@@ -18,14 +19,18 @@ class CsvDataController extends Controller
         // (new CsvDataExport)->store('public/diamonds.xlsx');;
         $batch = Bus::batch([
             new ExportExcelJob(),
-        ])->dispatch();
+        ])->finally(function(Batch $batch){
+            dd('Here');
+        })->dispatch();
+        return back()->with('downloadStarted','Export Process Running');
+
     }
 
     public function importCsv(Request $request)
     {
-        $csvFile = $request->csvFile;
-        Excel::import(new CsvDataImport, $csvFile);
-        return back()->with('success');
+        // $csvFile = $request->csvFile;
+        // Excel::import(new CsvDataImport, $csvFile);
+        return back()->with('uploadStarted','Import Process Running');
         // dd($csv);
     }
 
@@ -52,7 +57,7 @@ class CsvDataController extends Controller
                     ->orWhere('meas_depth', 'like', "%$request->searchData%");
         });
 
-        $datas = $datas->paginate(15)->withQueryString();
+        $datas = $datas->sortable()->paginate(15)->withQueryString();
         return view('home',compact('datas'));
     }
 
