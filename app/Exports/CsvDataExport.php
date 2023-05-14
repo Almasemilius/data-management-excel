@@ -12,6 +12,7 @@ class CsvDataExport implements FromQuery, WithHeadings
 {
 
     use Exportable;
+    public $timeout = 2000;
     public function headings(): array
     {
         return [

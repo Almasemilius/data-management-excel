@@ -1,6 +1,29 @@
 @extends('layouts.default')
 
 @section('content')
+<div id="other" >
+    <div class="">
+        @if (session()->has('uploadStarted'))
+        <div class="notification-container">
+            <div class="notification">
+                <span>Upload Process started</span>
+            </div>
+        </div>
+        @endif
+        @if (session()->has('downloadStarted'))
+        <div class="notification-container">
+            <div class="notification">
+                <span>Downloading Process started</span>
+            </div>
+        </div>
+        @endif
+    </div>
+</div>
+<div id="downloaded" class="notification-container hidden">
+    <div class="notification">
+        Process Completed. <a href="{{route('download.excel')}}">Download File</a>
+    </div>
+</div>
 <div class="px-5 py-10 lg:p-5 flex w-full justify-between">
     <form class="flex items-center gap-2" enctype="multipart/form-data" method="post" action="{{route('import.csv')}}">
         @csrf
@@ -14,8 +37,8 @@
     </form>
     <a href="{{route('export.excel')}}" class="btn " type="button">Download</a>
 </div>
-<div class="px-5 lg:p-5">
-    <form action="{{route('filter')}}" method="GET" id="filterForm">
+<div class="px-5 lg:p-5 w-full flex justify-center">
+    <form  action="{{route('filter')}}" method="GET" id="filterForm">
         @csrf
         <div class="grid grid-cols-9 gap-5">
             <div class="col-span-8 lg:col-span-4 relative">
@@ -51,8 +74,8 @@
                     <option value="Very Good">Very Good</option>
                     <option value="Good">Good</option>
                 </select>
-                <div>
-                    <button class="header-select" href="" onclick="resetQueryParams()">Reset</button>
+                <div class="w-full bg-gray-100 text-center flex hover:bg-gray-200 hover:shadow-md">
+                    <a class="header-select" href="/home">Reset</a>
                 </div>
             </div>
         </div>
@@ -88,31 +111,6 @@
                 <th class="table-cell">@sortablelink('fancy_color_overtone', 'fancy color overtone')</th>
                 <th class="table-cell">@sortablelink('fancy_color_intensity', 'fancy color intensity')</th>
                 <th class="table-cell">@sortablelink('total_sales_price', 'total sales price')</th>
-                <!-- <th class="table-cell header" wire:click="$set('sortByCol','cut')">cut</th=> -->
-                <!-- <th class="table-cell header" wire:click="$set('sortByCol','color')">color</th> -->
-                <!-- <th class="table-cell header" wire:click="$set('sortByCol','clarity')">clarity</th> -->
-                <!-- <th class="table-cell header" wire:click="$set('sortByCol','carat_weight')">carat weight</th> -->
-                <!-- <th class="table-cell header" wire:click="$set('sortByCol','cut_quality')">cut quality</th> -->
-                <!-- <th class="table-cell header" wire:click="$set('sortByCol','lab')">lab</th> -->
-                <!-- <th class="table-cell header" wire:click="$set('sortByCol','symmetry')">symmetry</th> -->
-                <!-- <th class="table-cell header" wire:click="$set('sortByCol','polish')">polish</th> -->
-                <!-- <th class="table-cell header" wire:click="$set('sortByCol','eye_clean')">eye clean</th> -->
-                <!-- <th class="table-cell header" wire:click="$set('sortByCol','culet_size')">culet size</th> -->
-                <!-- <th class="table-cell header" wire:click="$set('sortByCol','culet_condition')">culet condition</th>
-                    <th class="table-cell header" wire:click="$set('sortByCol','depth_percent')">depth percent</th>
-                    <th class="table-cell header" wire:click="$set('sortByCol','table_percent')">table percent</th>
-                    <th class="table-cell header" wire:click="$set('sortByCol','meas_length')">meas length</th>
-                    <th class="table-cell header" wire:click="$set('sortByCol','meas_width')">meas width</th> -->
-                <!-- <th class="table-cell header" wire:click="$set('sortByCol','meas_depth')">meas depth</th>
-                    <th class="table-cell header" wire:click="$set('sortByCol','girdle_min')">girdle min</th>
-                    <th class="table-cell header" wire:click="$set('sortByCol','girdle_max')">girdle max</th> -->
-                <!-- <th class="table-cell header" wire:click="$set('sortByCol','fluor_color')">fluor color</th>
-                    <th class="table-cell header" wire:click="$set('sortByCol','fluor_intensity')">fluor intensity</th>
-                    <th class="table-cell header" wire:click="$set('sortByCol','fancy_color_dominant_color')">fancy color dominant color</th>
-                    <th class="table-cell header" wire:click="$set('sortByCol','fancy_color_secondary_color')">fancy color secondary color</th>
-                    <th class="table-cell header" wire:click="$set('sortByCol','fancy_color_overtone')">fancy color overtone</th>
-                    <th class="table-cell header" wire:click="$set('sortByCol','fancy_color_intensity')">fancy color intensity</th>
-                    <th class="table-cell header" wire:click="$set('sortByCol','total_sales_price')">Total Sales price</th> -->
             </tr>
         </thead>
         <tbody>
@@ -152,12 +150,14 @@
         {{$datas->links()}}
     </div>
 </div>
-<script>
-  function resetQueryParams() {
-    var currentUrl = window.location.href;
-    var url = new URL(currentUrl);
-    url.search = '';
-    window.history.replaceState({}, document.title, url.toString());
-  }
+
+<script type="module">
+    Echo.channel('download')
+        .listen('ExcelReady', (e) => {
+            const other = document.getElementById('other')
+            other.style.display = 'none'
+            const finished = document.getElementById('downloaded')
+            finished.style.display = 'block'
+        });
 </script>
 @endsection

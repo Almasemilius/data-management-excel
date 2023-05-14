@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\web;
 
+use App\Events\ExcelReady;
 use App\Exports\CsvDataExport;
 use App\Http\Controllers\Controller;
 use App\Imports\CsvDataImport;
@@ -10,17 +11,17 @@ use App\Models\CsvData;
 use Illuminate\Bus\Batch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class CsvDataController extends Controller
 {
     public function exportExcel()
     {
-        // (new CsvDataExport)->store('public/diamonds.xlsx');;
         $batch = Bus::batch([
             new ExportExcelJob(),
         ])->finally(function(Batch $batch){
-            dd('Here');
+            event(new ExcelReady());
         })->dispatch();
         return back()->with('downloadStarted','Export Process Running');
 
@@ -28,10 +29,14 @@ class CsvDataController extends Controller
 
     public function importCsv(Request $request)
     {
-        // $csvFile = $request->csvFile;
-        // Excel::import(new CsvDataImport, $csvFile);
+        $csvFile = $request->csvFile;
+        Excel::import(new CsvDataImport, $csvFile);
         return back()->with('uploadStarted','Import Process Running');
-        // dd($csv);
+    }
+
+    public function getExcelFile()
+    {
+        return Storage::download('public/diamonds.xlsx');
     }
 
     public function filter(Request $request)

@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\ExcelReady;
 use App\Http\Controllers\web\CsvDataController;
 use App\Http\Livewire\Pages\HomePage;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +21,9 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/',HomePage::class);
-Route::get('home',[CsvDataController::class,'filter']);
+Route::get('home',[CsvDataController::class,'filter'])->name('home');
 Route::get('export-excel',[CsvDataController::class,'exportExcel'])->name('export.excel');
 Route::post('import-csv',[CsvDataController::class,'importCsv'])->name('import.csv');
 Route::get('home',[CsvDataController::class,'filter'])->name('filter');
+Route::get('get-file',[CsvDataController::class,'getExcelFile'])->name('download.excel');
+

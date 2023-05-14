@@ -19,7 +19,7 @@ class ExportExcelJob implements ShouldQueue
      * Execute the job.
      */
 
-    public $timeout = 600;
+    public $timeout = 2000;
     public function handle(): void
     {
         (new CsvDataExport)->store('public/diamonds.xlsx');
